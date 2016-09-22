@@ -68,6 +68,14 @@
         - src: '/vagrant/ansible'
           dest: '~vagrant/ansible'
 
+    - name: make sure vault password file exists
+      file:
+        path: '/vagrant/ansible/.vault.pass'
+        mode: '0600'
+        owner: 'vagrant'
+        group: 'vagrant'
+        state: touch
+
     - name: add the pre-configured vagrant instances to the hosts file
       lineinfile:
         dest: '/etc/hosts'
