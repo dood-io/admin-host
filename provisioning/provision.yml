@@ -1,0 +1,61 @@
+---
+
+- name: provision the admin host
+  hosts: admin
+  become: yes
+
+  tasks:
+    - name: copy the vagrant user files
+      copy:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+        owner: 'vagrant'
+        group: 'vagrant'
+        mode: '{{item.perms}}'
+      with_items:
+        - src: 'files/bash-profile.sh'
+          dest: '/home/vagrant/.bash_profile'
+          perms: '0640'
+        - src: 'files/ssh-config.txt'
+          dest: '/home/vagrant/.ssh/config'
+          perms: '0640'
+
+    - name: copy the system-wide files
+      copy:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+        owner: 'root'
+        group: 'root'
+        mode: '{{item.perms}}'
+      with_items:
+        - src: 'files/admin-host-aliases.sh'
+          dest: '/etc/profile.d/Z90-aliases.sh'
+          perms: '0644'
+
+    - name: create symlinks for the vagrant user
+      file:
+        src: '{{item.src}}'
+        dest: '{{item.dest}}'
+        owner: 'vagrant'
+        group: 'vagrant'
+        force: yes
+        state: link
+      with_items:
+        - src: '/vagrant/commands'
+          dest: '~vagrant/commands'
+        - src: '/vagrant/ansible'
+          dest: '~vagrant/ansible'
+
+
+- include: os-packages.yml
+  vars:
+    hosts: 'admin'
+
+
+- name: harden the server
+  hosts: admin
+  become: yes
+
+  roles:
+    - role: dev-sec.os-hardening
+

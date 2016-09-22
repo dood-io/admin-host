@@ -1,0 +1,22 @@
+---
+
+# https://galaxy.ansible.com/dev-sec/
+- src: 'dev-sec.mysql-hardening'
+- src: 'dev-sec.nginx-hardening'
+- src: 'dev-sec.os-hardening'
+- src: 'dev-sec.ssh-hardening'
+
+
+
+# https://galaxy.ansible.com/Stouts/
+- src: 'Stouts.supervisor'
+
+
+
+# https://galaxy.ansible.com/geerlingguy/
+#- src: 'geerlingguy.java'
+- src: 'geerlingguy.redis'
+
+
+
+# https://galaxy.ansible.com/jdauphant/

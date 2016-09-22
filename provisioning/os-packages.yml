@@ -1,0 +1,19 @@
+---
+- name: install the operating system packages
+  hosts: '{{hosts}}'
+  become: yes
+
+  vars_files:
+    - 'vars/os.yml'
+
+  tasks:
+    - name: install system packages
+      apt:
+        name: '{{item}}'
+        state: present
+      with_items: '{{os_packages}}'
+
+#    - name: address ssl warnings due to letsencrypt certs
+#      pip:
+#        name: 'urllib3[secure]'
+#        state: latest

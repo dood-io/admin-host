@@ -1,0 +1,9 @@
+---
+
+os_packages:
+  - git
+  - htop
+  - jq
+  - pv
+  - sysstat
+  - unzip

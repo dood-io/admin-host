@@ -1,0 +1,22 @@
+---
+- name: show the various ansible variables
+  hosts: localhost
+
+  tasks:
+    - name: debug "hostvars" variable
+      debug: var=hostvars
+
+    - name: debug "group_names" variable
+      debug: var=group_names
+
+    - name: debug "groups" variable
+      debug: var=groups
+
+    - name: debug "environment" variable
+      debug: var=environment
+
+    - name: debug "zzz_me" variable (defined in group_vars)
+      debug: var=zzz_me
+
+    - name: debug "zzz_you" variable (defined in host_vars)
+      debug: var=zzz_you
