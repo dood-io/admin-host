@@ -4,6 +4,28 @@
   hosts: admin
   become: yes
 
+  vars:
+    hosts_file_entries:
+      - { ip: '172.16.1.110', entry: 'trusty32-1 trusty32-1.vagrant.dev'}
+      - { ip: '172.16.1.120', entry: 'trusty32-2 trusty32-2.vagrant.dev'}
+      - { ip: '172.16.1.130', entry: 'trusty32-3 trusty32-3.vagrant.dev'}
+      - { ip: '172.16.1.140', entry: 'trusty32-4 trusty32-4.vagrant.dev'}
+      - { ip: '172.16.1.150', entry: 'trusty32-5 trusty32-5.vagrant.dev'}
+      - { ip: '172.16.1.160', entry: 'trusty32-6 trusty32-6.vagrant.dev'}
+      - { ip: '172.16.1.170', entry: 'trusty32-7 trusty32-7.vagrant.dev'}
+      - { ip: '172.16.1.180', entry: 'trusty32-8 trusty32-8.vagrant.dev'}
+      - { ip: '172.16.1.190', entry: 'trusty32-9 trusty32-9.vagrant.dev'}
+
+      - { ip: '172.16.2.110', entry: 'trusty64-1 trusty64-1.vagrant.dev'}
+      - { ip: '172.16.2.120', entry: 'trusty64-2 trusty64-2.vagrant.dev'}
+      - { ip: '172.16.2.130', entry: 'trusty64-3 trusty64-3.vagrant.dev'}
+      - { ip: '172.16.2.140', entry: 'trusty64-4 trusty64-4.vagrant.dev'}
+      - { ip: '172.16.2.150', entry: 'trusty64-5 trusty64-5.vagrant.dev'}
+      - { ip: '172.16.2.160', entry: 'trusty64-6 trusty64-6.vagrant.dev'}
+      - { ip: '172.16.2.170', entry: 'trusty64-7 trusty64-7.vagrant.dev'}
+      - { ip: '172.16.2.180', entry: 'trusty64-8 trusty64-8.vagrant.dev'}
+      - { ip: '172.16.2.190', entry: 'trusty64-9 trusty64-9.vagrant.dev'}
+
   tasks:
     - name: copy the vagrant user files
       copy:
@@ -45,6 +67,14 @@
           dest: '~vagrant/commands'
         - src: '/vagrant/ansible'
           dest: '~vagrant/ansible'
+
+    - name: add the pre-configured vagrant instances to the hosts file
+      lineinfile:
+        dest: '/etc/hosts'
+        regexp: '^{{item.ip}}'
+        line: '{{item.ip}} {{item.entry}}'
+        state: present
+      with_items: '{{hosts_file_entries}}'
 
 
 - include: os-packages.yml
