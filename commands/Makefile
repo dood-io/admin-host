@@ -34,5 +34,5 @@ ansible-vars-local: ## Show the ansible variables for localhost via local connec
 		-i $(INVENTORY_SYSTEM) \
 		debug-vars.yml
 
-include makefile.d/*/*
+include makefile.d/*.d/*
 
