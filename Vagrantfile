@@ -7,7 +7,7 @@
 
 $server_cpus              = File.readlines("vagrantconf/CPU_CORES").first.strip        # cores
 $server_memory            = File.readlines("vagrantconf/RAM_MB").first.strip           # mb
-$os_image                 = File.readlines("vagrantconf/OS").first.strip               # ox box name
+$os_image                 = File.readlines("vagrantconf/OS").first.strip               # os box name
 $domain                   = File.readlines("vagrantconf/DOMAIN").first.strip           # tld name
 $vm_list_prefix           = File.readlines("vagrantconf/VM_LIST_PREFIX").first.strip   # box prefix name for virtualization software
 $ip_address               = File.readlines("vagrantconf/IP_ADDR").first.strip          # static private ip address
