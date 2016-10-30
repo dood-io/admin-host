@@ -24,6 +24,16 @@ Go to your preferred VCS and create a **private** repository:
 * [Bitbucket](https://confluence.atlassian.com/bitbucket/create-a-git-repository-759857290.html)
 * [GitHub](https://help.github.com/articles/creating-a-new-repository/)
 
+##### Create a New Repo
+
+This example will initialize an empty repository and set the origin:
+
+```
+(~):$ mkdir new-private-repo && cd $_
+(~/new-private-repo):$ git init
+(~/new-private-repo):$ git remote add origin git@bitbucket.org:<team name>/new-private-repo.git
+```
+
 ##### Clone the Repo Locally
 
 Clone the newly-created private repo to your local environment:

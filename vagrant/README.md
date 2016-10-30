@@ -5,7 +5,7 @@
 This `vagrant` directory should be used to contain vagrant configuration directories.
 
 
-=== Preconfigured Configurations
+h3. Preconfigured Configurations
 
 There are preconfigured vagrant configurations in the *`.preconfigured`* directory.
 In order to use one of the preconfigured configurations and "claim" it, you can just
