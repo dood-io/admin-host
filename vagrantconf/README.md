@@ -1,0 +1,1 @@
+This directory contains configuration information for the admin host Vagrant instance.

@@ -5,59 +5,37 @@
 #  box settings
 ##################################################################################################
 
-$server_cpus              = "1"     # cores
-$server_memory            = "1024"  # mb
-$os_image                 = "ubuntu/trusty32"
-$domain                   = ".vm"
-$vm_list_prefix           = "vagrant-"
-$ip_address               = "192.168.202.10"
-$hostname                 = nil     # set a static hostname (optional)
+$server_cpus              = File.readlines("vagrantconf/CPU_CORES").first.strip        # cores
+$server_memory            = File.readlines("vagrantconf/RAM_MB").first.strip           # mb
+$os_image                 = File.readlines("vagrantconf/OS").first.strip               # ox box name
+$domain                   = File.readlines("vagrantconf/DOMAIN").first.strip           # tld name
+$vm_list_prefix           = File.readlines("vagrantconf/VM_LIST_PREFIX").first.strip   # box prefix name for virtualization software
+$ip_address               = File.readlines("vagrantconf/IP_ADDR").first.strip          # static private ip address
+$ansible_roles_local_dir  = File.readlines("vagrantconf/ROLES_PATH").first.strip       # mounted directory for external roles
+$hostname                 = File.readlines("vagrantconf/HOSTNAME").first               # set a static hostname (optional)
 
-$ansible_roles_local_dir  = "../ansible-roles"
+
+
 
 ##################################################################################################
-#  provisioning script
+#  hostname
 ##################################################################################################
 
-$provisioning_script = <<'EOF'
-echo "provisioning server..."
+# https://github.com/thepug/vagrant-dev-box/blob/master/Vagrantfile
+# https://github.com/joemaller/vagrant-dev-box/blob/master/Vagrantfile
 
-echo "... provisioning DONE!"
-EOF
+# if no hostname set, use the sanitized name of the Vagrantfile's current directory
+if $hostname.to_s.strip.length == 0
+    $hostname = File.basename(File.dirname(File.expand_path(__FILE__))).downcase.gsub(/[^a-z0-9]+/,'-').gsub(/^-+|-+$/,'')
+else
+    $hostname = $hostname.strip
+end
 
+# use "vagrant" if that fails
+$hostname = "vagrant" if $hostname.empty?
 
-$prepare_ansible_script = <<SCRIPT
-mkdir -p \
-    /etc/ansible \
-    /opt/ansible/roles \
-    /var/log/ansible/hosts
-
-chown -R vagrant:vagrant \
-    /opt/ansible \
-    /var/log/ansible/hosts
-
-echo "localhost ansible_connection=local
-
-[admin]
-admin-host ansible_connection=local
-" | tee /etc/ansible/hosts
-
-cp /vagrant/provisioning/ansible.cfg /etc/ansible/ansible.cfg
-
-
-# address ssl warnings due to letsencrypt certs:
-#
-#    ERROR! Unexpected Exception: Failed to validate the SSL certificate for galaxy.ansible.com.
-#    Make sure your managed systems have a valid CA certificate installed.
-#
-apt-get install \
-    -y -qq \
-    python-pip
-
-pip install \
-    urllib3[secure]
-
-SCRIPT
+# add a domain to the hostname
+$hostname = $hostname.gsub(/(#{$domain})*$/, '') + $domain
 
 
 
@@ -102,6 +80,11 @@ if $network_interface
     puts ""
     puts "******************************************************************************"
     puts "*  public_network will be bridged to   ==>  #{$network_interface}"
+    puts "*                          cpu cores   ==>  #{$server_cpus}"
+    puts "*                           ram (mb)   ==>  #{$server_memory}"
+    puts "*                           hostname   ==>  #{$hostname}"
+    puts "*                            ip addr   ==>  #{$ip_address}"
+    puts "*                                 os   ==>  #{$os_image}"
     puts "******************************************************************************"
     puts ""
 end
@@ -203,8 +186,8 @@ Vagrant.configure("2") do |config|
   #  provisioning
   # ---------------------------------------------------------
 
-  config.vm.provision "shell", inline: $prepare_ansible_script
-  config.vm.provision "shell", inline: $provisioning_script
+  config.vm.provision "shell", path: "vagrantconf/script_ansible.sh"
+  config.vm.provision "shell", path: "vagrantconf/script_provision.sh"
 
   # vagrant ansible docs: https://www.vagrantup.com/docs/provisioning/ansible_common.html
   # provision with ansible_local - https://www.vagrantup.com/docs/provisioning/ansible_local.html
